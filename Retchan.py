@@ -55,6 +55,39 @@ HTML = r'''<!DOCTYPE html>
 		nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem 1rem; }
 		nav a:hover, nav a:focus-visible { color: var(--cyan); }
 
+		.page-layout {
+			display: grid;
+			grid-template-columns: 220px minmax(0, 1fr);
+			gap: 1.5rem;
+			align-items: start;
+			width: min(100% - 2rem, 1200px);
+			margin: 0 auto;
+		}
+
+		.sidebar {
+			position: sticky;
+			top: 1rem;
+			display: grid;
+			gap: 0.4rem;
+			padding: 1rem;
+			border: 1px solid var(--border);
+			border-radius: 0.75rem;
+			background: rgba(12, 30, 57, 0.94);
+		}
+
+		.sidebar h2 { margin: 0 0 0.4rem; font-size: 1rem; }
+		.sidebar a {
+			padding: 0.65rem 0.75rem;
+			border-radius: 0.45rem;
+			color: #d6e8ff;
+			text-decoration: none;
+		}
+		.sidebar a:hover, .sidebar a:focus-visible {
+			color: var(--cyan);
+			background: var(--surface-raised);
+		}
+		.page-layout main { width: 100%; margin: 0; }
+
 		.hero {
 			margin: 2rem 0;
 			padding: 4rem 2rem;
@@ -137,13 +170,8 @@ HTML = r'''<!DOCTYPE html>
 			background: #07162b;
 		}
 
-		.login-panel .consent-label { display: flex; align-items: flex-start; }
-		.login-panel .consent-label input { width: auto; margin: 0.25rem 0.5rem 0 0; }
 		.login-panel button.button { cursor: pointer; }
 		.login-panel button:disabled { cursor: not-allowed; opacity: 0.6; }
-		.login-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-		.auth-message { min-height: 1.5rem; color: #8fe6ff; }
-		.auth-message[data-error="true"] { color: #fca5a5; }
 
 		.server-submit-form {
 			display: grid;
@@ -186,19 +214,6 @@ HTML = r'''<!DOCTYPE html>
 			grid-template-columns: repeat(3, minmax(0, 1fr));
 			gap: 0.75rem;
 		}
-
-		.platform-options {
-			display: flex;
-			flex-wrap: wrap;
-			gap: 0.5rem 1rem;
-			padding: 0.9rem;
-			border: 1px solid var(--border);
-			border-radius: 0.5rem;
-		}
-
-		.platform-options legend { padding: 0 0.35rem; color: #cfe2fa; }
-		.platform-options label { display: flex; align-items: center; gap: 0.4rem; }
-		.platform-options input { width: auto; margin: 0; padding: 0; border: 0; background: transparent; }
 
 		.feature-form button:disabled { cursor: not-allowed; opacity: 0.6; }
 		.feature-notice { color: #c5daf4; }
@@ -387,6 +402,17 @@ HTML = r'''<!DOCTYPE html>
 			nav { display: flex; flex-wrap: wrap; gap: 0.5rem 0.9rem; }
 			nav a { margin-left: 0; }
 		}
+
+		@media (max-width: 760px) {
+			.page-layout { grid-template-columns: minmax(0, 1fr); }
+			.sidebar {
+				position: static;
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.25rem;
+			}
+			.sidebar h2 { flex: 0 0 100%; }
+		}
 	</style>
 </head>
 <body>
@@ -396,134 +422,27 @@ HTML = r'''<!DOCTYPE html>
 			<span>Play, Win and Teamwork</span>
 		</div>
 		<nav aria-label="Main navigation">
-			<a href="#games">Games</a>
-			<a href="#profiles">Profiles</a>
-			<a href="#teammates">Find teammates</a>
-			<a href="#chat">Chat</a>
-			<a href="#leaderboards">Leaderboards</a>
-			<a href="#news">News</a>
-			<a href="#upcoming-events">Live events</a>
-			<a href="#communities">Communities</a>
-			<a href="#tournaments">Tournaments</a>
-			<a href="#report">Report activity</a>
-			<a href="#membership">Membership</a>
-			<a href="#login">Sign in</a>
-			<a href="#join">Join</a>
+			<a href="sign-in.html">Sign in / Join</a>
 		</nav>
 	</header>
+
+	<div class="page-layout">
+		<aside class="sidebar" aria-label="Community sections">
+			<h2>Community</h2>
+			<a href="#parties">Parties &amp; lobbies</a>
+			<a href="#communities">Communities</a>
+			<a href="#chat">Chats</a>
+			<a href="#games">Games</a>
+			<a href="#teammates">Find teammates</a>
+			<a href="#upcoming-events">Live events</a>
+			<a href="sign-in.html">Sign in / Join</a>
+		</aside>
 
 	<main>
 		<section class="hero" id="about">
 			<h1>Play together. Level up.</h1>
 			<p>Find teammates, join events, and meet your next favorite gaming crew.</p>
-			<a class="button" href="#login">Sign in or create an account</a>
-		</section>
-
-		<section id="login" class="login-panel">
-			<h2>Sign in to NEXUS VELORIX</h2>
-			<p class="membership-status">Sign in with email and password, an email link, Apple, or phone verification.</p>
-			<p id="auth-message" class="auth-message" role="status" aria-live="polite">
-				Firebase sign-in needs your web app configuration before it can be used.
-			</p>
-			<div class="card">
-				<form id="email-password-form">
-					<label for="auth-email">Email address
-						<input id="auth-email" type="email" autocomplete="email" required>
-					</label>
-					<label for="auth-password">Password
-						<input id="auth-password" type="password" autocomplete="current-password" minlength="6" required>
-					</label>
-					<div class="login-actions">
-						<button class="button" type="submit" value="signin">Sign in with email</button>
-						<button class="button" type="submit" value="signup">Create account</button>
-						<button class="button" id="password-reset" type="button">Reset password</button>
-					</div>
-				</form>
-
-				<form id="email-link-form">
-					<label for="email-link-address">Email link sign-in
-						<input id="email-link-address" type="email" autocomplete="email" required>
-					</label>
-					<button class="button" type="submit">Send sign-in link</button>
-				</form>
-
-				<form id="email-link-complete-form" hidden>
-					<label for="email-link-complete-address">Confirm the email address that received the link
-						<input id="email-link-complete-address" type="email" autocomplete="email" required>
-					</label>
-					<button class="button" type="submit">Complete email sign-in</button>
-				</form>
-
-				<button class="button" id="apple-sign-in" type="button">Continue with Apple</button>
-
-				<form id="phone-form">
-					<label for="phone-number">Phone number (include country code)
-						<input id="phone-number" type="tel" autocomplete="tel" placeholder="+15551234567" pattern="^\+[1-9][0-9]{1,14}$" required>
-					</label>
-					<label class="consent-label">
-						<input id="sms-consent" type="checkbox" required>
-						I agree to receive a verification text; message and data rates may apply.
-					</label>
-					<div id="recaptcha-container"></div>
-					<button class="button" type="submit">Send verification code</button>
-				</form>
-
-				<form id="phone-code-form" hidden>
-					<label for="phone-code">SMS verification code
-						<input id="phone-code" type="text" inputmode="numeric" autocomplete="one-time-code" required>
-					</label>
-					<button class="button" type="submit">Verify code and sign in</button>
-				</form>
-
-				<p class="membership-status">Phone sign-in uses SMS verification and requires an authorized HTTPS domain and allowed Firebase SMS regions. Firebase may process phone numbers for abuse prevention; message and data rates may apply.</p>
-				<div id="signed-in-panel" hidden>
-					<p>Signed in as <span id="signed-in-user"></span>.</p>
-					<button class="button" id="sign-out" type="button">Sign out</button>
-				</div>
-			</div>
-		</section>
-
-		<section id="age-verification" class="login-panel" hidden>
-			<h2>Age check</h2>
-			<p class="membership-status">NEXUS VELORIX requires members to be 13 or older. Enter your display name and birth date. This is a self-declaration, not identity verification.</p>
-			<p class="feature-notice">Your birth date is used only for the age calculation and is not saved. Only your display name, eligibility result, and check time are stored.</p>
-			<div class="card">
-				<form id="age-verification-form" class="feature-form">
-					<label for="age-display-name">Display name
-						<input id="age-display-name" type="text" autocomplete="nickname" minlength="2" maxlength="32" required>
-					</label>
-					<div class="birth-date-fields">
-						<label for="birth-day">Day
-							<input id="birth-day" type="number" min="1" max="31" inputmode="numeric" required>
-						</label>
-						<label for="birth-month">Month
-							<input id="birth-month" type="number" min="1" max="12" inputmode="numeric" required>
-						</label>
-						<label for="birth-year">Year
-							<input id="birth-year" type="number" min="1900" inputmode="numeric" required>
-						</label>
-					</div>
-					<button class="button" type="submit">Verify age</button>
-				</form>
-				<p id="age-check-result" class="auth-message" role="status" aria-live="polite"></p>
-			</div>
-		</section>
-
-		<section id="hardware-selection" class="login-panel" hidden>
-			<h2>Select Your Gaming Hardware</h2>
-			<p class="membership-status">Choose all platforms you play on. This panel appears after sign-in and the age check.</p>
-			<div class="card">
-				<fieldset class="platform-options">
-					<legend>Gaming hardware</legend>
-					<label><input type="checkbox" name="profile-hardware" value="PlayStation"> PlayStation</label>
-					<label><input type="checkbox" name="profile-hardware" value="Xbox"> Xbox</label>
-					<label><input type="checkbox" name="profile-hardware" value="PC"> PC</label>
-					<label><input type="checkbox" name="profile-hardware" value="Nintendo"> Nintendo</label>
-					<label><input type="checkbox" name="profile-hardware" value="Mobile"> Mobile</label>
-					<label><input type="checkbox" name="profile-hardware" value="Other"> Other</label>
-				</fieldset>
-				<p id="hardware-selection-status" class="feature-notice" role="status" aria-live="polite">Selections are not saved until Firebase profile storage is configured.</p>
-			</div>
+			<a class="button" href="sign-in.html">Sign in or create an account</a>
 		</section>
 
 		<section id="games" class="game-feed" aria-labelledby="game-feed-title">
@@ -531,9 +450,9 @@ HTML = r'''<!DOCTYPE html>
 				<div>
 					<p class="game-feed-kicker">Discover your next squad</p>
 					<h2 id="game-feed-title">Game feed</h2>
-					<p>Browse featured games, save favorites, and find people to play with. Player counts are not live.</p>
+					<p>Browse featured games, save favorites, and find people to play with. Player counts are not live. Additional multiplayer picks are inspired by <a href="https://store.steampowered.com/charts/mostplayed" target="_blank" rel="noopener noreferrer">Steam's most-played chart</a>; rankings vary by platform.</p>
 				</div>
-				<span class="game-feed-count" id="game-feed-count">12 featured games</span>
+				<span class="game-feed-count" id="game-feed-count">18 featured games</span>
 			</div>
 			<div class="game-feed-toolbar" aria-label="Game feed controls">
 				<label for="game-search">Search games
@@ -547,7 +466,13 @@ HTML = r'''<!DOCTYPE html>
 						<option value="minecraft">Minecraft</option>
 						<option value="free-fire">Free Fire</option>
 						<option value="call-of-duty">Call of Duty</option>
-						<option value="valorant">VALORANT</option>
+						<option value="counter-strike-2">Counter-Strike 2</option>
+						<option value="dota-2">Dota 2</option>
+						<option value="delta-force">Delta Force</option>
+						<option value="rust">Rust</option>
+						<option value="pubg-battlegrounds">PUBG: BATTLEGROUNDS</option>
+						<option value="call-of-duty-warzone">Call of Duty: Warzone</option>
+						<option value="need-for-speed">Need for Speed</option>
 						<option value="apex-legends">Apex Legends</option>
 						<option value="rocket-league">Rocket League</option>
 						<option value="fc-26">EA SPORTS FC 26</option>
@@ -598,10 +523,40 @@ HTML = r'''<!DOCTYPE html>
 					<h3>Call of Duty</h3>
 					<p>Find teammates for multiplayer and other community game modes.</p>
 				</article>
-				<article class="card game-card" data-game="valorant">
-					<span class="tag">Tactical</span>
-					<h3>VALORANT</h3>
-					<p>Meet players for coordinated, competitive matches.</p>
+				<article class="card game-card" data-game="counter-strike-2">
+					<span class="tag">Tactical shooter</span>
+					<h3>Counter-Strike 2</h3>
+					<p>Team up for tactical matches and community tournaments.</p>
+				</article>
+				<article class="card game-card" data-game="dota-2">
+					<span class="tag">MOBA</span>
+					<h3>Dota 2</h3>
+					<p>Find teammates for strategy, roles, and coordinated matches.</p>
+				</article>
+				<article class="card game-card" data-game="delta-force">
+					<span class="tag">Tactical shooter</span>
+					<h3>Delta Force</h3>
+					<p>Coordinate squads for tactical and extraction modes.</p>
+				</article>
+				<article class="card game-card" data-game="rust">
+					<span class="tag">Survival</span>
+					<h3>Rust</h3>
+					<p>Find a group for survival, base building, and server play.</p>
+				</article>
+				<article class="card game-card" data-game="pubg-battlegrounds">
+					<span class="tag">Battle royale</span>
+					<h3>PUBG: BATTLEGROUNDS</h3>
+					<p>Squad up and find teammates for battle royale matches.</p>
+				</article>
+				<article class="card game-card" data-game="call-of-duty-warzone">
+					<span class="tag">Battle royale</span>
+					<h3>Call of Duty: Warzone</h3>
+					<p>Find a squad for battle royale and Resurgence matches.</p>
+				</article>
+				<article class="card game-card" data-game="need-for-speed">
+					<span class="tag">Racing</span>
+					<h3>Need for Speed</h3>
+					<p>Connect with racers for online races and car meets.</p>
 				</article>
 				<article class="card game-card" data-game="apex-legends">
 					<span class="tag">Squad-based</span>
@@ -640,23 +595,24 @@ HTML = r'''<!DOCTYPE html>
 			<h2>Gamer Profiles</h2>
 			<p class="feature-notice">Profiles will show only a display name, games, region, and availability. Email and phone details stay private.</p>
 			<div class="card">
-				<p class="membership-status">No community profiles are available yet. Firebase configuration and Firestore security rules are required for shared profiles.</p>
-				<form class="feature-form">
+				<p class="membership-status">Profile controls are available, but profiles cannot be saved until Supabase storage and row-level security are configured.</p>
+				<form id="profile-form" class="feature-form">
 					<label for="profile-name">Display name
-						<input id="profile-name" type="text" maxlength="32" disabled>
+						<input id="profile-name" type="text" minlength="2" maxlength="32" required>
 					</label>
 					<label for="profile-games">Favorite games
-						<input id="profile-games" type="text" placeholder="Choose games after setup" disabled>
+						<input id="profile-games" type="text" placeholder="Choose games">
 					</label>
 					<label for="profile-region">Region
-						<select id="profile-region" disabled>
-							<option>Select a region</option>
+						<select id="profile-region" required>
+							<option value="">Select a region</option>
 							<option>North America</option><option>South America</option>
 							<option>Europe</option><option>Asia</option>
 							<option>Oceania</option><option>Africa</option>
 						</select>
 					</label>
-					<button class="button" type="button" disabled>Save profile — setup required</button>
+					<button class="button" type="submit">Save profile</button>
+					<p id="profile-save-status" class="feature-notice" role="status" aria-live="polite"></p>
 				</form>
 			</div>
 		</section>
@@ -666,46 +622,63 @@ HTML = r'''<!DOCTYPE html>
 			<p class="membership-status">Search for players by game and region after profiles are enabled.</p>
 			<div class="toolbar">
 				<label for="teammate-game">Game
-					<select id="teammate-game" disabled>
+					<select id="teammate-game">
 						<option>All games</option><option>Fortnite</option><option>Roblox</option>
 						<option>Minecraft</option><option>Free Fire</option><option>Call of Duty</option>
+						<option>Counter-Strike 2</option><option>Dota 2</option><option>Delta Force</option>
+						<option>Rust</option><option>PUBG: BATTLEGROUNDS</option>
+						<option>Call of Duty: Warzone</option><option>Need for Speed</option>
 						<option>EA SPORTS FC 26</option><option>eFootball</option><option>GTA 6</option>
 					</select>
 				</label>
 				<label for="teammate-region">Region
-					<select id="teammate-region" disabled>
+					<select id="teammate-region">
 						<option>All regions</option><option>North America</option>
 						<option>South America</option><option>Europe</option>
 						<option>Asia</option><option>Oceania</option><option>Africa</option>
 					</select>
 				</label>
 				<label for="teammate-hardware">Hardware
-					<select id="teammate-hardware" disabled>
+					<select id="teammate-hardware">
 						<option>All hardware</option><option>PlayStation</option><option>Xbox</option>
 						<option>PC</option><option>Nintendo</option><option>Mobile</option><option>Other</option>
 					</select>
 				</label>
 			</div>
-			<p class="card membership-status">No teammate profiles to show yet. Sign-in and Firestore setup are required.</p>
+			<p id="teammate-results-status" class="card membership-status" role="status" aria-live="polite">Filters are available, but no teammate profiles are connected yet. Nothing is searched or saved.</p>
+		</section>
+
+		<section id="parties">
+			<h2>Parties &amp; Lobbies</h2>
+			<p class="membership-status">Find a party, coordinate a lobby, and team up around your favorite games.</p>
+			<div class="card">
+				<p class="membership-status">Party listings are not connected yet. Create and join controls stay available, but no parties or invites are saved.</p>
+				<a class="button" href="sign-in.html">Sign in to join the community</a>
+				<button class="button" id="create-party-button" type="button">Create or join a party/lobby</button>
+				<p id="party-action-status" class="feature-notice" role="status" aria-live="polite"></p>
+			</div>
 		</section>
 
 		<section id="chat">
 			<h2>Game Chat</h2>
-			<p class="membership-status">Public game channels are planned. Chat is inactive until Firebase and Firestore rules are configured.</p>
+			<p class="membership-status">Chat controls are available. Messages are not sent or stored until Supabase storage, access policies, and moderation are configured.</p>
 			<div class="card">
 				<label for="chat-game">Game channel
-					<select id="chat-game" disabled>
+					<select id="chat-game">
 						<option>Choose a game</option><option>Fortnite</option><option>Roblox</option>
 						<option>Minecraft</option><option>Free Fire</option><option>Call of Duty</option>
+						<option>Counter-Strike 2</option><option>Dota 2</option><option>Delta Force</option>
+						<option>Rust</option><option>PUBG: BATTLEGROUNDS</option>
+						<option>Call of Duty: Warzone</option><option>Need for Speed</option>
 						<option>EA SPORTS FC 26</option><option>eFootball</option><option>GTA 6</option>
 					</select>
 				</label>
-				<p class="feature-notice" role="status">No messages. Chat is not connected.</p>
-				<form class="feature-form">
+				<p id="chat-status" class="feature-notice" role="status" aria-live="polite">No messages. Chat is not connected.</p>
+				<form id="chat-form" class="feature-form">
 					<label for="chat-message">Message
-						<textarea id="chat-message" maxlength="500" rows="3" disabled></textarea>
+						<textarea id="chat-message" maxlength="500" rows="3" required></textarea>
 					</label>
-					<button class="button" type="button" disabled>Send — setup required</button>
+					<button class="button" type="submit">Send message</button>
 				</form>
 				<p class="feature-notice">Public messages will need reporting and moderation before chat can launch.</p>
 			</div>
@@ -724,7 +697,10 @@ HTML = r'''<!DOCTYPE html>
 					<label for="score-game">Game
 						<select id="score-game" required>
 							<option>Fortnite</option><option>Roblox</option><option>Minecraft</option>
-							<option>Free Fire</option><option>Call of Duty</option><option>VALORANT</option>
+							<option>Free Fire</option><option>Call of Duty</option>
+							<option>Counter-Strike 2</option><option>Dota 2</option><option>Delta Force</option>
+							<option>Rust</option><option>PUBG: BATTLEGROUNDS</option>
+							<option>Call of Duty: Warzone</option><option>Need for Speed</option>
 							<option>Apex Legends</option><option>Rocket League</option><option>EA SPORTS FC 26</option>
 							<option>eFootball</option><option>GTA 6</option><option>Other game</option>
 						</select>
@@ -764,7 +740,7 @@ HTML = r'''<!DOCTYPE html>
 			</div>
 			<div class="card">
 				<h3>Official leaderboard</h3>
-				<p class="membership-status">No verified results are available. Firebase score storage, access rules, and result review must be configured before real standings can appear.</p>
+				<p class="membership-status">No verified results are available. Supabase score storage, access rules, and result review must be configured before real standings can appear.</p>
 				<table>
 					<thead><tr><th>Game</th><th>Player</th><th>Points</th><th>Division</th><th>Status</th></tr></thead>
 					<tbody><tr><td colspan="5">No verified leaderboard entries yet.</td></tr></tbody>
@@ -810,7 +786,13 @@ HTML = r'''<!DOCTYPE html>
 						<option>Minecraft</option>
 						<option>Free Fire</option>
 						<option>Call of Duty</option>
-						<option>VALORANT</option>
+						<option>Counter-Strike 2</option>
+						<option>Dota 2</option>
+						<option>Delta Force</option>
+						<option>Rust</option>
+						<option>PUBG: BATTLEGROUNDS</option>
+						<option>Call of Duty: Warzone</option>
+						<option>Need for Speed</option>
 						<option>Apex Legends</option>
 						<option>Rocket League</option>
 						<option>EA SPORTS FC 26</option>
@@ -835,16 +817,16 @@ HTML = r'''<!DOCTYPE html>
 
 		<section id="communities">
 			<h2>Popular Gaming Communities</h2>
-			<p class="membership-status">Join links have not been provided yet. Submit verified invites through the server directory for review.</p>
+			<p class="membership-status">Community invite links are not connected yet. Use an active request button to ask the organizer for a verified invite.</p>
 			<div class="cards">
-				<article class="card"><h3>Fortnite</h3><p>Community invite link pending.</p></article>
-				<article class="card"><h3>Roblox</h3><p>Community invite link pending.</p></article>
-				<article class="card"><h3>Minecraft</h3><p>Community invite link pending.</p></article>
-				<article class="card"><h3>Free Fire</h3><p>Community invite link pending.</p></article>
-				<article class="card"><h3>Call of Duty</h3><p>Community invite link pending.</p></article>
-				<article class="card"><h3>EA SPORTS FC 26</h3><p>Community invite link pending.</p></article>
-				<article class="card"><h3>eFootball</h3><p>Community invite link pending.</p></article>
-				<article class="card"><h3>GTA 6</h3><p>Community invite link pending.</p></article>
+				<article class="card"><h3>Fortnite</h3><p>Verified invite link not provided yet.</p><a class="button" href="mailto:rangerthadeus54@gmail.com?subject=Request%20a%20Fortnite%20community%20invite">Request invite</a></article>
+				<article class="card"><h3>Roblox</h3><p>Verified invite link not provided yet.</p><a class="button" href="mailto:rangerthadeus54@gmail.com?subject=Request%20a%20Roblox%20community%20invite">Request invite</a></article>
+				<article class="card"><h3>Minecraft</h3><p>Verified invite link not provided yet.</p><a class="button" href="mailto:rangerthadeus54@gmail.com?subject=Request%20a%20Minecraft%20community%20invite">Request invite</a></article>
+				<article class="card"><h3>Free Fire</h3><p>Verified invite link not provided yet.</p><a class="button" href="mailto:rangerthadeus54@gmail.com?subject=Request%20a%20Free%20Fire%20community%20invite">Request invite</a></article>
+				<article class="card"><h3>Call of Duty</h3><p>Verified invite link not provided yet.</p><a class="button" href="mailto:rangerthadeus54@gmail.com?subject=Request%20a%20Call%20of%20Duty%20community%20invite">Request invite</a></article>
+				<article class="card"><h3>EA SPORTS FC 26</h3><p>Verified invite link not provided yet.</p><a class="button" href="mailto:rangerthadeus54@gmail.com?subject=Request%20an%20EA%20SPORTS%20FC%2026%20community%20invite">Request invite</a></article>
+				<article class="card"><h3>eFootball</h3><p>Verified invite link not provided yet.</p><a class="button" href="mailto:rangerthadeus54@gmail.com?subject=Request%20an%20eFootball%20community%20invite">Request invite</a></article>
+				<article class="card"><h3>GTA 6</h3><p>Verified invite link not provided yet.</p><a class="button" href="mailto:rangerthadeus54@gmail.com?subject=Request%20a%20GTA%206%20community%20invite">Request invite</a></article>
 			</div>
 		</section>
 
@@ -885,6 +867,13 @@ HTML = r'''<!DOCTYPE html>
 						<option>Minecraft</option>
 						<option>Free Fire</option>
 						<option>Call of Duty</option>
+						<option>Counter-Strike 2</option>
+						<option>Dota 2</option>
+						<option>Delta Force</option>
+						<option>Rust</option>
+						<option>PUBG: BATTLEGROUNDS</option>
+						<option>Call of Duty: Warzone</option>
+						<option>Need for Speed</option>
 						<option>EA SPORTS FC 26</option>
 						<option>eFootball</option>
 						<option>GTA 6</option>
@@ -1013,6 +1002,9 @@ HTML = r'''<!DOCTYPE html>
 							<option value="">Choose a game</option>
 							<option>Fortnite</option><option>Roblox</option><option>Minecraft</option>
 							<option>Free Fire</option><option>Call of Duty</option>
+							<option>Counter-Strike 2</option><option>Dota 2</option><option>Delta Force</option>
+							<option>Rust</option><option>PUBG: BATTLEGROUNDS</option>
+							<option>Call of Duty: Warzone</option><option>Need for Speed</option>
 							<option>EA SPORTS FC 26</option><option>eFootball</option><option>GTA 6</option>
 							<option>Other</option>
 						</select>
@@ -1032,10 +1024,11 @@ HTML = r'''<!DOCTYPE html>
 			</div>
 		</section>
 	</main>
+	</div>
 
 	<footer>
 		<p>© 2026 NEXUS VELORIX. All rights reserved.</p>
-		<p>A community for gamers · <a href="#report">Report suspicious activity</a> · <a href="mailto:rangerthadeus54@gmail.com">Contact the organizer</a></p>
+		<p>A community for gamers · <a href="#report">Report suspicious activity</a> · <a href="terms.html">Terms and conditions</a> · <a href="privacy.html">Privacy policy</a> · <a href="mailto:rangerthadeus54@gmail.com">Contact the organizer</a></p>
 	</footer>
 	<script>
 		const gameFilter = document.querySelector("#game-filter");
@@ -1056,7 +1049,13 @@ HTML = r'''<!DOCTYPE html>
 			"minecraft": ["#36a76a", "#143a2f", "#b7f47c", "M"],
 			"free-fire": ["#ed6a25", "#512319", "#ffd166", "FF"],
 			"call-of-duty": ["#78834c", "#1a2824", "#e7d6a0", "COD"],
-			"valorant": ["#d84055", "#431c39", "#ff9aa6", "V"],
+			"counter-strike-2": ["#d68a36", "#352a23", "#ffda8a", "CS2"],
+			"dota-2": ["#bd493b", "#351b20", "#ffb27b", "D2"],
+			"delta-force": ["#6e8d55", "#1b3130", "#d0e58c", "DF"],
+			"rust": ["#bd6339", "#3b2822", "#ffc27c", "R"],
+			"pubg-battlegrounds": ["#c59b3c", "#393323", "#ffe29a", "PUBG"],
+			"call-of-duty-warzone": ["#697a52", "#182822", "#d5d9a1", "WZ"],
+			"need-for-speed": ["#d94c3e", "#321c2a", "#ffb16b", "NFS"],
 			"apex-legends": ["#bd493b", "#302238", "#ffbd72", "A"],
 			"rocket-league": ["#168bc2", "#122653", "#63eeff", "RL"],
 			"fc-26": ["#159b74", "#123a43", "#a9ffd9", "FC"],
@@ -1217,6 +1216,30 @@ HTML = r'''<!DOCTYPE html>
 			});
 		});
 
+		document.querySelector("#profile-form").addEventListener("submit", (event) => {
+			event.preventDefault();
+			document.querySelector("#profile-save-status").textContent =
+				"Supabase profile storage is not connected. Your profile was not saved.";
+		});
+
+		["#teammate-game", "#teammate-region", "#teammate-hardware"].forEach((selector) => {
+			document.querySelector(selector).addEventListener("change", () => {
+				document.querySelector("#teammate-results-status").textContent =
+					"Filters are active, but no teammate profiles are connected. No search was sent.";
+			});
+		});
+
+		document.querySelector("#create-party-button").addEventListener("click", () => {
+			document.querySelector("#party-action-status").textContent =
+				"Party and lobby storage is not connected. Nothing was created or joined.";
+		});
+
+		document.querySelector("#chat-form").addEventListener("submit", (event) => {
+			event.preventDefault();
+			document.querySelector("#chat-status").textContent =
+				"Chat is not connected. Your message was not sent or saved.";
+		});
+
 		document.querySelector("#server-submission-form").addEventListener("submit", (event) => {
 			event.preventDefault();
 			const game = document.querySelector("#server-game").value;
@@ -1282,7 +1305,7 @@ HTML = r'''<!DOCTYPE html>
 					.map((option) => option.value);
 				document.querySelector("#hardware-selection-status").textContent = selected.length
 					? `Selected: ${selected.join(", ")}. This selection is not saved yet.`
-					: "No hardware selected. Selections are not saved until Firebase profile storage is configured.";
+					: "No hardware selected. Selections are not saved until Supabase profile storage is configured.";
 			});
 		});
 
@@ -1449,306 +1472,6 @@ HTML = r'''<!DOCTYPE html>
 		eventLoadMoreButton.addEventListener("click", () => loadEventPage());
 		loadEventPage(true);
 		window.setInterval(() => loadEventPage(true), 5 * 60 * 1000);
-	</script>
-	<script type="module">
-		import { initializeApp } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
-		import {
-			createUserWithEmailAndPassword,
-			getAuth,
-			getRedirectResult,
-			isSignInWithEmailLink,
-			onAuthStateChanged,
-			OAuthProvider,
-			RecaptchaVerifier,
-			sendPasswordResetEmail,
-			sendSignInLinkToEmail,
-			signInWithEmailAndPassword,
-			signInWithEmailLink,
-			signInWithPhoneNumber,
-			signInWithRedirect,
-			signOut
-		} from "https://www.gstatic.com/firebasejs/13.3.0/firebase-auth.js";
-		import {
-			doc,
-			getDoc,
-			getFirestore,
-			serverTimestamp,
-			setDoc
-		} from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
-
-		const firebaseConfig = {
-			apiKey: "",
-			authDomain: "",
-			projectId: "",
-			appId: ""
-		};
-		const authMessage = document.querySelector("#auth-message");
-		const authControls = document.querySelectorAll("#login input, #login button");
-		const configReady = Object.values(firebaseConfig).every((value) => value.trim() !== "");
-
-		function showAuthMessage(message, isError = false) {
-			authMessage.textContent = message;
-			authMessage.dataset.error = String(isError);
-		}
-
-		if (!configReady) {
-			authControls.forEach((control) => { control.disabled = true; });
-			showAuthMessage("Add your Firebase web app configuration to enable sign-in.", true);
-		} else {
-			const app = initializeApp(firebaseConfig);
-			const auth = getAuth(app);
-			const db = getFirestore(app);
-			let recaptchaVerifier;
-			let phoneConfirmation;
-
-			if (isSignInWithEmailLink(auth, window.location.href)) {
-				const completionForm = document.querySelector("#email-link-complete-form");
-				completionForm.hidden = false;
-				document.querySelector("#email-link-form").hidden = true;
-				document.querySelector("#email-link-complete-address").value =
-					sessionStorage.getItem("emailForSignIn") || "";
-				showAuthMessage("Enter the email address that received your sign-in link.");
-			}
-
-			document.querySelector("#email-password-form").addEventListener("submit", async (event) => {
-				event.preventDefault();
-				const email = document.querySelector("#auth-email").value.trim();
-				const password = document.querySelector("#auth-password").value;
-				try {
-					if (event.submitter?.value === "signup") {
-						await createUserWithEmailAndPassword(auth, email, password);
-						showAuthMessage("Account created and signed in.");
-					} else {
-						await signInWithEmailAndPassword(auth, email, password);
-						showAuthMessage("Signed in successfully.");
-					}
-				} catch (error) {
-					showAuthMessage(error.message, true);
-				}
-			});
-
-			document.querySelector("#password-reset").addEventListener("click", async () => {
-				const email = document.querySelector("#auth-email").value.trim();
-				if (!email) {
-					showAuthMessage("Enter your email address first to request a password reset.", true);
-					return;
-				}
-				try {
-					await sendPasswordResetEmail(auth, email);
-					showAuthMessage("Password reset email sent.");
-				} catch (error) {
-					showAuthMessage(error.message, true);
-				}
-			});
-
-			document.querySelector("#email-link-form").addEventListener("submit", async (event) => {
-				event.preventDefault();
-				const email = document.querySelector("#email-link-address").value.trim();
-				const continueUrl = new URL(window.location.pathname, window.location.origin).href;
-				try {
-					await sendSignInLinkToEmail(auth, email, {
-						url: continueUrl,
-						handleCodeInApp: true
-					});
-					sessionStorage.setItem("emailForSignIn", email);
-					showAuthMessage("Sign-in link sent. Check your email to continue.");
-				} catch (error) {
-					showAuthMessage(error.message, true);
-				}
-			});
-
-			document.querySelector("#email-link-complete-form").addEventListener("submit", async (event) => {
-				event.preventDefault();
-				const email = document.querySelector("#email-link-complete-address").value.trim();
-				try {
-					await signInWithEmailLink(auth, email, window.location.href);
-					sessionStorage.removeItem("emailForSignIn");
-					history.replaceState(null, document.title, window.location.pathname);
-					showAuthMessage("Signed in successfully.");
-				} catch (error) {
-					showAuthMessage(error.message, true);
-				}
-			});
-
-			document.querySelector("#apple-sign-in").addEventListener("click", async () => {
-				const provider = new OAuthProvider("apple.com");
-				provider.addScope("email");
-				provider.addScope("name");
-				try {
-					await signInWithRedirect(auth, provider);
-				} catch (error) {
-					showAuthMessage(error.message, true);
-				}
-			});
-
-			const phoneForm = document.querySelector("#phone-form");
-			const phoneButton = phoneForm.querySelector("button");
-			const localHostnames = ["localhost", "127.0.0.1"];
-			const phoneDomainReady =
-				window.location.protocol === "https:" &&
-				!localHostnames.includes(window.location.hostname);
-			if (!phoneDomainReady) {
-				phoneButton.disabled = true;
-				showAuthMessage("Deploy this site on an authorized HTTPS domain to use phone sign-in.");
-			}
-
-			phoneForm.addEventListener("submit", async (event) => {
-				event.preventDefault();
-				if (!phoneDomainReady) {
-					showAuthMessage("Phone sign-in requires an authorized HTTPS domain.", true);
-					return;
-				}
-				try {
-					recaptchaVerifier ??= new RecaptchaVerifier(auth, "recaptcha-container", {});
-					phoneConfirmation = await signInWithPhoneNumber(
-						auth,
-						document.querySelector("#phone-number").value.trim(),
-						recaptchaVerifier
-					);
-					document.querySelector("#phone-code-form").hidden = false;
-					showAuthMessage("Verification code sent by SMS. Enter it below.");
-				} catch (error) {
-					await recaptchaVerifier?.clear();
-					recaptchaVerifier = undefined;
-					showAuthMessage(error.message, true);
-				}
-			});
-
-			document.querySelector("#phone-code-form").addEventListener("submit", async (event) => {
-				event.preventDefault();
-				if (!phoneConfirmation) {
-					showAuthMessage("Request an SMS verification code first.", true);
-					return;
-				}
-				try {
-					await phoneConfirmation.confirm(document.querySelector("#phone-code").value.trim());
-					showAuthMessage("Phone verified and signed in.");
-				} catch (error) {
-					showAuthMessage(error.message, true);
-				}
-			});
-
-			document.querySelector("#sign-out").addEventListener("click", async () => {
-				try {
-					await signOut(auth);
-					showAuthMessage("Signed out.");
-				} catch (error) {
-					showAuthMessage(error.message, true);
-				}
-			});
-
-			const ageSection = document.querySelector("#age-verification");
-			const ageForm = document.querySelector("#age-verification-form");
-			const ageResult = document.querySelector("#age-check-result");
-			const hardwareSection = document.querySelector("#hardware-selection");
-			const birthYearInput = document.querySelector("#birth-year");
-			birthYearInput.max = String(new Date().getFullYear());
-
-			function calculateAge(day, month, year, today = new Date()) {
-				if (
-					!Number.isInteger(day) || !Number.isInteger(month) || !Number.isInteger(year) ||
-					year < 1900 || month < 1 || month > 12 || day < 1 || day > 31
-				) {
-					return null;
-				}
-				const birthDate = new Date(year, month - 1, day);
-				if (
-					birthDate.getFullYear() !== year ||
-					birthDate.getMonth() !== month - 1 ||
-					birthDate.getDate() !== day ||
-					birthDate > new Date(today.getFullYear(), today.getMonth(), today.getDate())
-				) {
-					return null;
-				}
-				let age = today.getFullYear() - year;
-				if (
-					today.getMonth() + 1 < month ||
-					(today.getMonth() + 1 === month && today.getDate() < day)
-				) {
-					age -= 1;
-				}
-				return age;
-			}
-
-			ageForm.addEventListener("submit", async (event) => {
-				event.preventDefault();
-				const user = auth.currentUser;
-				if (!user) {
-					ageResult.textContent = "Sign in before completing the age check.";
-					return;
-				}
-
-				const displayName = document.querySelector("#age-display-name").value.trim();
-				const day = Number(document.querySelector("#birth-day").value);
-				const month = Number(document.querySelector("#birth-month").value);
-				const year = Number(birthYearInput.value);
-				const age = calculateAge(day, month, year);
-				if (displayName.length < 2 || age === null) {
-					ageResult.textContent = "Enter a valid display name and birth date.";
-					ageResult.dataset.error = "true";
-					return;
-				}
-				document.querySelector("#birth-day").value = "";
-				document.querySelector("#birth-month").value = "";
-				birthYearInput.value = "";
-				try {
-					await setDoc(doc(db, "userProfiles", user.uid), {
-						displayName,
-						ageEligible: age >= 13,
-						ageCheckedAt: serverTimestamp()
-					}, { merge: true });
-					ageForm.reset();
-					if (age >= 13) {
-						ageForm.hidden = true;
-						hardwareSection.hidden = false;
-						ageResult.textContent = "Age check passed. Your birth date was not saved.";
-						document.querySelector("#signed-in-user").textContent = displayName;
-					} else {
-						hardwareSection.hidden = true;
-						ageResult.textContent = "You must be at least 13 to use this community.";
-					}
-					ageResult.dataset.error = String(age < 13);
-				} catch (error) {
-					ageResult.textContent = error.message;
-					ageResult.dataset.error = "true";
-				}
-			});
-
-			onAuthStateChanged(auth, async (user) => {
-				const signedInPanel = document.querySelector("#signed-in-panel");
-				signedInPanel.hidden = !user;
-				ageSection.hidden = !user;
-				hardwareSection.hidden = true;
-				if (user) {
-					document.querySelector("#signed-in-user").textContent =
-						user.displayName || user.email || user.phoneNumber || user.uid;
-					try {
-						const profile = await getDoc(doc(db, "userProfiles", user.uid));
-						const ageEligible = profile.exists() && profile.data().ageEligible === true;
-						hardwareSection.hidden = !ageEligible;
-						ageForm.hidden = ageEligible;
-						ageResult.textContent = ageEligible
-							? "Age check complete. Your birth date is not stored."
-							: "Complete the age check to continue.";
-						ageResult.dataset.error = "false";
-						if (ageEligible && profile.data().displayName) {
-							document.querySelector("#signed-in-user").textContent = profile.data().displayName;
-						}
-					} catch (error) {
-						hardwareSection.hidden = true;
-						ageForm.hidden = false;
-						ageResult.textContent = error.message;
-						ageResult.dataset.error = "true";
-					}
-				}
-			}, (error) => {
-				showAuthMessage(error.message, true);
-			});
-
-			getRedirectResult(auth).catch((error) => {
-				showAuthMessage(error.message, true);
-			});
-		}
 	</script>
 </body>
 </html>'''
